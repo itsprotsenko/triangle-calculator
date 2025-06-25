@@ -2,104 +2,234 @@ package com.itsprotsenko;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TriangleCalculator {
+    public final static int decimalPlaces = 5;
+
+    Calculate calculate;
+
     private Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
     private double scrnW = screensize.getWidth(), scrnH = screensize.getHeight();
-    private int frameW =500, frameH = 350;
+    private int frameW =500, frameH = 365;
 
     Image icon = new ImageIcon("src/main/resources/icon.png").getImage();
 
     JFrame frame = new JFrame("Triangle Calculator");
 
-    JLabel sideABLabel = new JLabel();
-    JTextField sideABInput = new JTextField();
-    JLabel sideBCLabel = new JLabel();
-    JTextField sideBCInput = new JTextField();
-    JLabel sideCALabel = new JLabel();
-    JTextField sideCAInput = new JTextField();
-    JLabel angleALabel = new JLabel();
-    JTextField angleAInput = new JTextField();
-    JLabel angleBLabel = new JLabel();
-    JTextField angleBInput = new JTextField();
-    JLabel angleCLabel = new JLabel();
-    JTextField angleCInput = new JTextField();
+    List<JLabel> sideLabels = new ArrayList<>();
+    List<JLabel> angleLabels = new ArrayList<>();
+    List<JTextField> sideInputs = new ArrayList<>();
+    List<JTextField> angleInputs = new ArrayList<>();
 
     JButton calculateButton = new JButton("Calculate");
+    JLabel errorLabel = new JLabel();
+    JLabel successLabel = new JLabel();
+
+    Color colorError = new Color(252, 29, 29);
+//    Color colorWarning = new Color(249, 124, 0);
+    Color colorSuccess = new Color(15, 220, 50);
 
     public TriangleCalculator() {
+        calculate = new Calculate();
 
-        sideABLabel.setBounds(15, 15, 150 , 35);
-        sideABLabel.setFont(new Font("Arial", Font.PLAIN, 15));
-        sideABLabel.setVisible(true);
-        sideABLabel.setText("Length of Side AB:");
-        frame.add(sideABLabel);
+        int x, y;
 
-        sideABInput.setBounds(15, 55, 150, 35);
-        sideABInput.setFont(new Font("Arial", Font.PLAIN, 15));
-        sideABInput.setOpaque(true);
-        sideABInput.setVisible(true);
-        frame.add(sideABInput);
+        for(String s : new String[]{"AB", "BC", "CA"}) {
+            sideLabels.add(new JLabel("Length of Side " + s + ":"));
+            sideInputs.add(new JTextField());
+        }
+        for(String s : new String[]{"A", "B", "C"}) {
+            angleLabels.add(new JLabel("Length of Angle " + s + ":"));
+            angleInputs.add(new JTextField());
+        }
 
-        sideBCLabel.setBounds(15, 100, 150 , 35);
-        sideBCLabel.setFont(new Font("Arial", Font.PLAIN, 15));
-        sideBCLabel.setVisible(true);
-        sideBCLabel.setText("Length of Side AB:");
-        frame.add(sideBCLabel);
+        x = 15;
+        y = 15;
 
-        sideBCInput.setBounds(15, 140, 150, 35);
-        sideBCInput.setFont(new Font("Arial", Font.PLAIN, 15));
-        sideBCInput.setOpaque(true);
-        sideBCInput.setVisible(true);
-        frame.add(sideBCInput);
+        for(int i = 0; i < sideLabels.size(); i++) {
+            JLabel sideLabel = sideLabels.get(i);
+            JTextField sideInput = sideInputs.get(i);
 
-        sideCALabel.setBounds(15, 200, 150 , 35);
-        sideCALabel.setFont(new Font("Arial", Font.PLAIN, 15));
-        sideCALabel.setVisible(true);
-        sideCALabel.setText("Length of Side AB:");
-        frame.add(sideCALabel);
+            sideLabel.setBounds(x, y, 150 , 35);
+            sideLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+            sideLabel.setVisible(true);
+            frame.add(sideLabel);
 
-        sideCAInput.setBounds(15, 240, 150, 35);
-        sideCAInput.setFont(new Font("Arial", Font.PLAIN, 15));
-        sideCAInput.setOpaque(true);
-        sideCAInput.setVisible(true);
-        frame.add(sideCAInput);
+            y += 40;
 
-        angleALabel.setBounds(265, 15, 150 , 35);
-        angleALabel.setFont(new Font("Arial", Font.PLAIN, 15));
-        angleALabel.setVisible(true);
-        angleALabel.setText("Measure of Angle A:");
-        frame.add(angleALabel);
+            sideInput.setBounds(x, y, 150, 35);
+            sideInput.setFont(new Font("Arial", Font.PLAIN, 15));
+            sideInput.setOpaque(true);
+            sideInput.setVisible(true);
+            frame.add(sideInput);
 
-        angleAInput.setBounds(265, 55, 150, 35);
-        angleAInput.setFont(new Font("Arial", Font.PLAIN, 15));
-        angleAInput.setOpaque(true);
-        angleAInput.setVisible(true);
-        frame.add(angleAInput);
+            y += 40;
+        }
 
-        angleBLabel.setBounds(265, 100, 150 , 35);
-        angleBLabel.setFont(new Font("Arial", Font.PLAIN, 15));
-        angleBLabel.setVisible(true);
-        angleBLabel.setText("Measure of Angle B:");
-        frame.add(angleBLabel);
+        x = 265;
+        y = 15;
 
-        angleBInput.setBounds(265, 140, 150, 35);
-        angleBInput.setFont(new Font("Arial", Font.PLAIN, 15));
-        angleBInput.setOpaque(true);
-        angleBInput.setVisible(true);
-        frame.add(angleBInput);
+        for(int i = 0; i < angleLabels.size(); i++) {
+            JLabel sideLabel = angleLabels.get(i);
+            JTextField sideInput = angleInputs.get(i);
 
-        angleCLabel.setBounds(265, 200, 150 , 35);
-        angleCLabel.setFont(new Font("Arial", Font.PLAIN, 15));
-        angleCLabel.setVisible(true);
-        angleCLabel.setText("Measure of Angle C:");
-        frame.add(angleCLabel);
+            sideLabel.setBounds(x, y, 150 , 35);
+            sideLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+            sideLabel.setVisible(true);
+            frame.add(sideLabel);
 
-        angleCInput.setBounds(265, 240, 150, 35);
-        angleCInput.setFont(new Font("Arial", Font.PLAIN, 15));
-        angleCInput.setOpaque(true);
-        angleCInput.setVisible(true);
-        frame.add(angleCInput);
+            y += 40;
+
+            sideInput.setBounds(x, y, 150, 35);
+            sideInput.setFont(new Font("Arial", Font.PLAIN, 15));
+            sideInput.setOpaque(true);
+            sideInput.setVisible(true);
+            frame.add(sideInput);
+
+            y += 40;
+        }
+        calculateButton.setBounds(15, 260, 150, 35);
+        calculateButton.setFont(new Font("Arial", Font.PLAIN, 15));
+        calculateButton.setVisible(true);
+        calculateButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                double[] sides = new double[3];
+                double[] angles = new double[3];
+                int emptySides = 0, emptyAngles = 0;
+
+                for(int i = 0; i < sideInputs.size(); i++) {
+                    sideInputs.get(i).setBackground(Color.white);
+                    angleInputs.get(i).setBackground(Color.white);
+                }
+
+                errorLabel.setVisible(false);
+                successLabel.setVisible(false);
+
+                for(int i = 0; i < sideInputs.size(); i++) {
+                    if(sideInputs.get(i).getText().isEmpty()) {
+                        emptySides++;
+                    } else {
+                        try {
+                            sides[i] = calculate.roundDouble(Double.parseDouble(sideInputs.get(i).getText()), decimalPlaces);
+                            if(sides[i] <= 0) {
+                                sideInputs.get(i).setBackground(colorError);
+                                errorLabel.setVisible(true);
+                                errorLabel.setText("Error: invalid input. Must be greater than 0");
+                                break;
+                            }
+                        } catch (NumberFormatException ex) {
+                            sideInputs.get(i).setBackground(colorError);
+                            errorLabel.setVisible(true);
+                            errorLabel.setText("Error: invalid input. Not a number");
+                        }
+                    }
+
+                    if(angleInputs.get(i).getText().isEmpty()) {
+                        emptyAngles++;
+                    } else {
+                        try {
+                            angles[i] = calculate.roundDouble(Double.parseDouble(angleInputs.get(i).getText()), decimalPlaces);
+                            if(angles[i] <= 0 || angles[i] >= 180) {
+                                angleInputs.get(i).setBackground(colorError);
+                                errorLabel.setVisible(true);
+                                errorLabel.setText("Error: invalid input. Must be greater than 0 and less than 180");
+                                break;
+                            }
+                        } catch (NumberFormatException ex) {
+                            angleInputs.get(i).setBackground(colorError);
+                            errorLabel.setVisible(true);
+                            errorLabel.setText("Error: invalid input. Not a number");
+                        }
+                    }
+                }
+
+                if(!errorLabel.isVisible()) {
+                    if(emptySides == 3) {
+                        for(JTextField tf : sideInputs) {
+                            tf.setBackground(colorError);
+                        }
+                        errorLabel.setText("Error: At least one side length is required");
+                        errorLabel.setVisible(true);
+                    }
+                    else if(emptySides + emptyAngles > 3) {
+                        for (JTextField tf : sideInputs) {
+                            if (tf.getText().isEmpty()) {
+                                tf.setBackground(colorError);
+                            }
+                        }
+                        for (JTextField tf : angleInputs) {
+                            if (tf.getText().isEmpty()) {
+                                tf.setBackground(colorError);
+                            }
+                        }
+                        errorLabel.setText("Error: At least three inputs are required");
+                        errorLabel.setVisible(true);
+                    }
+                    else if(emptySides + emptyAngles < 3) {
+                            for(JTextField tf : sideInputs) {
+                                if(!tf.getText().isEmpty()) {
+                                    tf.setBackground(colorError);
+                                }
+                            }
+                            for(JTextField tf : angleInputs) {
+                                if(!tf.getText().isEmpty()) {
+                                    tf.setBackground(colorError);
+                                }
+                            }
+                            errorLabel.setText("Error: Maximum number of inputs allowed is 3");
+                            errorLabel.setVisible(true);
+                    } else {
+                        try {
+                            calculate.calculateTriangle(sides, angles);
+
+                            for(int i = 0; i < angleInputs.size(); i++) {
+                                if(sideInputs.get(i).getText().isEmpty()) {
+                                    sideInputs.get(i).setBackground(Color.green);
+                                }
+                                if(angleInputs.get(i).getText().isEmpty()) {
+                                    angleInputs.get(i).setBackground(Color.green);
+                                }
+                                angleInputs.get(i).setText(angles[i] + "");
+                                sideInputs.get(i).setText(sides[i] + "");
+                            }
+                            successLabel.setVisible(true);
+                            successLabel.setText("Triangle calculated");
+
+                        } catch (Exception err) {
+                            for(JTextField tf : sideInputs) {
+                                if(!tf.getText().isEmpty()) {
+                                    tf.setBackground(colorError);
+                                }
+                            }
+                            for(JTextField tf : angleInputs) {
+                                if(!tf.getText().isEmpty()) {
+                                    tf.setBackground(colorError);
+                                }
+                            }
+                            errorLabel.setText("Error: Triangle not possible with given values");
+                            errorLabel.setVisible(true);
+                        }
+                    }
+                }
+            }
+        });
+        frame.add(calculateButton);
+
+        errorLabel.setBounds(15, 305, 400, 20);
+        errorLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        errorLabel.setForeground(colorError);
+        errorLabel.setVisible(false);
+        frame.add(errorLabel);
+
+        successLabel.setBounds(15, 330, 400, 20);
+        successLabel.setFont(new Font("Arial", Font.BOLD, 12));
+        successLabel.setForeground(colorSuccess);
+        successLabel.setVisible(false);
+        frame.add(successLabel);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocation((int)(scrnW/2 - frameW/2), (int)(scrnH/2 - frameH/2));
